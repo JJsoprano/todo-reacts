@@ -68,16 +68,19 @@ function App() {
    * Deletes a task from the list.
    *
    * This function takes a task id and removes the task with that id from the list.
+   * It works by filtering the tasks array and returning a new array with all tasks that
+   * do not match the given id.
    *
    * @param {number} id - The unique identifier of the task to be deleted.
    */
   const deleteTask = (id) => {
+    // Filter the tasks array and return a new array without the task with the given id
     setTasks(tasks.filter(task => task.id !== id));
   };
 
   return (
     <div className="App">
-      <h1>📝 Task Manager</h1>
+      <h1>📝 My Todo List</h1>
       <div className="input-area">
         <input
           type="text"
@@ -87,22 +90,31 @@ function App() {
         />
         <button onClick={addTask}>Add</button>
       </div>
+      <div className="todo-input">
+      <input type="text" placeholder="Add a task" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
+      <button onClick={addTask}>Add</button>
+      </div>
 
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <span
-              onClick={() => toggleComplete(task.id)}
-              style={{
-                textDecoration: task.completed ? 'line-through' : 'none',
-                cursor: 'pointer'
-              }}
-            >
-              {task.title}
-            </span>
-            <button onClick={() => deleteTask(task.id)} className="delete-btn">❌</button>
-          </li>
-        ))}
+{tasks.map((task) => (
+  <li key={task.id}>
+    <div>
+      <span
+        onClick={() => toggleComplete(task.id)}
+        style={{
+          textDecoration: task.completed ? 'line-through' : 'none',
+          cursor: 'pointer'
+        }}
+      >
+        {task.title}
+      </span>
+      <button onClick={() => deleteTask(task.id)} className="delete-btn">❌</button>
+      <footer className="footer">
+        <p>{tasks.filter(t => t.completed).length} of {tasks.length} tasks completed</p>
+      </footer>
+    </div>
+  </li>
+))}
       </ul>
     </div>
   );
