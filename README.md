@@ -1,12 +1,28 @@
-# React + Vite
+🚀 Live Demo: [Todo App](https://jjsoprano.github.io/todo-reacts/)
+# ✅ Responsive Todo List (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and modern **Todo List application** built with **React + Vite**.  
+Works seamlessly on **desktop and mobile** devices.  
 
-Currently, two official plugins are available:
+🚀 **Live Demo:** [Todo App](https://jjsoprano.github.io/todo-reacts/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
+- ➕ Add, ✅ complete, and 🗑️ delete tasks
+- 💾 Tasks are stored in **localStorage** (persist after refresh)
+- 📱 Fully **responsive design** (desktop & mobile friendly)
+- 🎨 Clean UI with simple hover effects
+- ⌨️ Keyboard shortcut: **Enter** to add a task
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+- [React](https://react.dev/) (with Vite setup)
+- [Vite](https://vitejs.dev/) for fast builds
+- Plain **CSS** for styling (no external framework)
+- GitHub Actions + Pages for deployment
+
+---
+
+## 📂 Project Structure
