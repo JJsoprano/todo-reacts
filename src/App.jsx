@@ -12,6 +12,7 @@ function App() {
   });
 
   const [newTask, setNewTask] = useState("");
+  const [priority, setPriority] = useState("Medium"); // 👈 new state for priority
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
@@ -34,9 +35,11 @@ function App() {
       id: Date.now(),
       title: newTask.trim(),
       completed: false,
+      priority: priority, // 👈 add priority to task
     };
     setTasks([...tasks, task]);
     setNewTask("");
+    setPriority("Medium"); // reset dropdown
   };
 
   const toggleComplete = (id) => {
@@ -65,6 +68,10 @@ function App() {
     setEditingId(null);
     setEditingText("");
   };
+const priorityOrder = ["High", "Medium", "Low"];
+const sortedTasks = [...tasks].sort(
+  (a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
+);
 
   return (
     <div className={`app-container ${darkMode ? "dark" : ""}`}>
@@ -84,14 +91,25 @@ function App() {
             onChange={(e) => setNewTask(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addTask()}
           />
+
+          {/* 👇 New Priority Dropdown */}
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+          >
+            <option value="High">🔥 High</option>
+            <option value="Medium">⚖️ Medium</option>
+            <option value="Low">🟢 Low</option>
+          </select>
+
           <button onClick={addTask}>Add</button>
         </div>
 
         <ul className="task-list">
-          {tasks.length === 0 ? (
+          {sortedTasks.length === 0 ? (
             <p className="empty">No tasks yet 🎉</p>
           ) : (
-            tasks.map((task) => (
+            sortedTasks.map((task) => (
               <li key={task.id} className={task.completed ? "completed" : ""}>
                 {editingId === task.id ? (
                   <>
@@ -110,6 +128,12 @@ function App() {
                     <span onClick={() => toggleComplete(task.id)}>
                       {task.title}
                     </span>
+
+                    {/* 👇 Show Priority */}
+                    <span className={`priority ${task.priority.toLowerCase()}`}>
+                      {task.priority}
+                    </span>
+
                     <div className="task-actions">
                       <button
                         className="edit"
