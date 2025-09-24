@@ -3,19 +3,21 @@ name: Deploy Vite App to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main   # only deploy when pushing to main branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: npm
 
       - name: Install dependencies
         run: npm install
@@ -23,14 +25,11 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 🔑 Cache busting step
+      # 🔑 Cache busting: ensures new build files are always used
       - name: Add cache-busting hash
         run: |
           ts=$(date +%s)
-          for file in dist/assets/*.*; do
-            newfile="dist/assets/$(basename $file)?v=$ts"
-            mv "$file" "$file"
-          done
+          find dist -type f -exec touch -t $(date -d @$ts +%Y%m%d%H%M.%S) {} \;
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
