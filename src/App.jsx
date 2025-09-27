@@ -19,9 +19,7 @@ function App() {
 
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
-  
-  // NEW STATE: To track the current filter status
-  const [filterStatus, setFilterStatus] = useState("all"); 
+  const [filterStatus, setFilterStatus] = useState("all");
 
   // Save tasks and dark mode to localStorage
   useEffect(() => {
@@ -78,7 +76,7 @@ function App() {
     (a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
   );
 
-  // NEW LOGIC: Filter tasks based on filterStatus
+  // Filter tasks based on filterStatus
   const filteredTasks = sortedTasks.filter((task) => {
     if (filterStatus === "active") {
       return !task.completed;
@@ -93,7 +91,8 @@ function App() {
   const FilterButton = ({ status, children }) => (
     <button
       onClick={() => setFilterStatus(status)}
-      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+      // UPDATED STYLE: Smaller text (text-xs) and reduced padding (py-0.5 px-2)
+      className={`py-0.5 px-2 rounded-full text-xs font-medium transition-colors ${
         filterStatus === status
           ? "bg-indigo-600 text-white"
           : "bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
@@ -104,8 +103,13 @@ function App() {
   );
 
   return (
+    // Assuming you want the background of the body to be the space image
+    // I'll keep the background neutral, but you can adjust your global CSS to match the image.
     <div className={`min-h-screen p-6 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
+      
+      {/* This is the inner 'black/white' window */}
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
+        
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -148,7 +152,7 @@ function App() {
           </button>
         </div>
 
-        {/* NEW FILTER SECTION */}
+        {/* FILTER SECTION MOVED HERE (into the inner container) */}
         <div className="flex gap-3 mb-6 border-b pb-4 border-gray-200 dark:border-gray-700">
           <FilterButton status="all">All ({tasks.length})</FilterButton>
           <FilterButton status="active">Active ({tasks.filter(t => !t.completed).length})</FilterButton>
@@ -157,7 +161,6 @@ function App() {
 
         {/* Task List */}
         <ul className="space-y-3">
-          {/* DISPLAY filteredTasks INSTEAD OF sortedTasks */}
           {filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all" ? (
              <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
           ) : filteredTasks.length === 0 && tasks.length === 0 ? (
@@ -166,8 +169,10 @@ function App() {
             filteredTasks.map((task) => (
               <li
                 key={task.id}
-                className={`flex justify-between items-center p-3 rounded-lg shadow-sm transition-all duration-200 ${
-                  task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-50 dark:bg-gray-700"
+                // UPDATED STYLE: Changed from p-3 to p-2 for a tighter look,
+                // and added rounded-xl to make the task item stand out more.
+                className={`flex justify-between items-center p-2 rounded-xl shadow-md transition-all duration-200 ${
+                  task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
               >
                 {editingId === task.id ? (
@@ -178,7 +183,7 @@ function App() {
                       onChange={(e) => setEditingText(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
                       className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
-                      autoFocus // Add autoFocus for better UX
+                      autoFocus
                     />
                     <button
                       className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -191,7 +196,7 @@ function App() {
                   <>
                     <span
                       onClick={() => toggleComplete(task.id)}
-                      className="cursor-pointer flex-grow text-lg" // Made text slightly larger
+                      className="cursor-pointer flex-grow text-base"
                     >
                       {task.title}
                     </span>
@@ -208,14 +213,14 @@ function App() {
                     </span>
                     <div className="ml-3 flex gap-2">
                       <button
-                        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500" // simpler styling
                         onClick={() => startEditing(task.id, task.title)}
                         aria-label="Edit Task"
                       >
                         ✏️
                       </button>
                       <button
-                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500" // simpler styling
                         onClick={() => deleteTask(task.id)}
                         aria-label="Delete Task"
                       >
@@ -238,4 +243,4 @@ function App() {
   );
 }
 
-export default App;3
+export default App;
