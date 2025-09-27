@@ -19,6 +19,9 @@ function App() {
 
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
+  
+  // NEW STATE: To track the current filter status
+  const [filterStatus, setFilterStatus] = useState("all"); 
 
   // Save tasks and dark mode to localStorage
   useEffect(() => {
@@ -75,6 +78,31 @@ function App() {
     (a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
   );
 
+  // NEW LOGIC: Filter tasks based on filterStatus
+  const filteredTasks = sortedTasks.filter((task) => {
+    if (filterStatus === "active") {
+      return !task.completed;
+    }
+    if (filterStatus === "completed") {
+      return task.completed;
+    }
+    return true; // "all"
+  });
+
+  // Helper component for the filter buttons
+  const FilterButton = ({ status, children }) => (
+    <button
+      onClick={() => setFilterStatus(status)}
+      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+        filterStatus === status
+          ? "bg-indigo-600 text-white"
+          : "bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
+      }`}
+    >
+      {children}
+    </button>
+  );
+
   return (
     <div className={`min-h-screen p-6 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
@@ -99,13 +127,13 @@ function App() {
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addTask()}
-            className="flex-grow px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-400 dark:bg-gray-700"
+            className="flex-grow px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600"
           />
 
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="px-2 py-2 border rounded-lg dark:bg-gray-700"
+            className="px-2 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
           >
             <option value="High">🔥 High</option>
             <option value="Medium">⚖️ Medium</option>
@@ -114,21 +142,31 @@ function App() {
 
           <button
             onClick={addTask}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
             Add
           </button>
         </div>
 
+        {/* NEW FILTER SECTION */}
+        <div className="flex gap-3 mb-6 border-b pb-4 border-gray-200 dark:border-gray-700">
+          <FilterButton status="all">All ({tasks.length})</FilterButton>
+          <FilterButton status="active">Active ({tasks.filter(t => !t.completed).length})</FilterButton>
+          <FilterButton status="completed">Completed ({tasks.filter(t => t.completed).length})</FilterButton>
+        </div>
+
         {/* Task List */}
         <ul className="space-y-3">
-          {sortedTasks.length === 0 ? (
+          {/* DISPLAY filteredTasks INSTEAD OF sortedTasks */}
+          {filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all" ? (
+             <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
+          ) : filteredTasks.length === 0 && tasks.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
           ) : (
-            sortedTasks.map((task) => (
+            filteredTasks.map((task) => (
               <li
                 key={task.id}
-                className={`flex justify-between items-center p-3 rounded-lg shadow-sm ${
+                className={`flex justify-between items-center p-3 rounded-lg shadow-sm transition-all duration-200 ${
                   task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-50 dark:bg-gray-700"
                 }`}
               >
@@ -139,10 +177,11 @@ function App() {
                       value={editingText}
                       onChange={(e) => setEditingText(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
-                      className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600"
+                      className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
+                      autoFocus // Add autoFocus for better UX
                     />
                     <button
-                      className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                       onClick={() => saveEdit(task.id)}
                     >
                       💾 Save
@@ -152,12 +191,12 @@ function App() {
                   <>
                     <span
                       onClick={() => toggleComplete(task.id)}
-                      className="cursor-pointer flex-grow"
+                      className="cursor-pointer flex-grow text-lg" // Made text slightly larger
                     >
                       {task.title}
                     </span>
                     <span
-                      className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg ${
+                      className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap ${
                         task.priority === "High"
                           ? "bg-red-500 text-white"
                           : task.priority === "Medium"
@@ -169,14 +208,16 @@ function App() {
                     </span>
                     <div className="ml-3 flex gap-2">
                       <button
-                        className="px-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
                         onClick={() => startEditing(task.id, task.title)}
+                        aria-label="Edit Task"
                       >
                         ✏️
                       </button>
                       <button
-                        className="px-2 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
                         onClick={() => deleteTask(task.id)}
+                        aria-label="Delete Task"
                       >
                         ✖
                       </button>
@@ -197,4 +238,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;3
