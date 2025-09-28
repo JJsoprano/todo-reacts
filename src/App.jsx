@@ -161,21 +161,31 @@ function App() {
 
         {/* Task List */}
         <ul className="space-y-3">
-          {filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all" ? (
-             <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
-          ) : filteredTasks.length === 0 && tasks.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
-          ) : (
-            filteredTasks.map((task) => (
-              <li
-                key={task.id}
-                // UPDATED STYLE: Changed from p-3 to p-2 for a tighter look,
-                // and added rounded-xl to make the task item stand out more.
-                className={`flex justify-between items-center p-2 rounded-xl shadow-md transition-all duration-200 ${
-                  task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                }`}
-              >
+          {(() => {
+            let content;
+            if (filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all") {
+              content = <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>;
+            } else if (filteredTasks.length === 0 && tasks.length === 0) {
+              content = <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>;
+            } else {
+              content = filteredTasks.map((task) => {
+                let priorityClass = "";
+                if (task.priority === "High") {
+                  priorityClass = "bg-red-500 text-white";
+                } else if (task.priority === "Medium") {
+                  priorityClass = "bg-yellow-400 text-black";
+                } else {
+                  priorityClass = "bg-green-500 text-white";
+                }
+                return (
+                  <li
+                    key={task.id}
+                    className={`flex justify-between items-center p-2 rounded-xl shadow-md transition-all duration-200 ${
+                      task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    }`}
+                  >
                 {editingId === task.id ? (
+                  // ... (Editing mode remains the same)
                   <div className="flex gap-2 w-full">
                     <input
                       type="text"
@@ -193,12 +203,21 @@ function App() {
                     </button>
                   </div>
                 ) : (
-                  <>
+                  // Display mode with new Checkbox
+                  <div className="flex items-center flex-grow">
+                    {/* NEW CHECKBOX ELEMENT */}
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => toggleComplete(task.id)}
+                      className="h-5 w-5 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                    />
+
+                    {/* Task Title - Removed onClick, now the checkbox handles it */}
                     <span
-                      onClick={() => toggleComplete(task.id)}
-                      className="cursor-pointer flex-grow text-base"
+                      className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap ${priorityClass}`}
                     >
-                      {task.title}
+                      {task.priority}
                     </span>
                     <span
                       className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap ${
@@ -213,34 +232,32 @@ function App() {
                     </span>
                     <div className="ml-3 flex gap-2">
                       <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500" // simpler styling
+                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
                         onClick={() => startEditing(task.id, task.title)}
                         aria-label="Edit Task"
                       >
                         ✏️
                       </button>
                       <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500" // simpler styling
-                        onClick={() => deleteTask(task.id)}
-                        aria-label="Delete Task"
-                      >
-                        ✖
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))
-          )}
-        </ul>
-
-        {/* Footer */}
-        <p className="mt-6 text-sm text-gray-600 dark:text-gray-400">
-          {tasks.filter((t) => t.completed).length} of {tasks.length} tasks completed
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default App;
+                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
+                                onClick={() => deleteTask(task.id)}
+                                aria-label="Delete Task"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </li>
+                        );
+                      });
+                    }
+                    return content;
+                  })()}
+                </ul>
+              </div>
+            </div>
+          );
+        }
+        
+        export default App;
