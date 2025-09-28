@@ -1,280 +1,113 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+import React, { useState } from 'react';
+// Import your individual TaskItem component (where the layout change happened)
+import TaskItem from './TaskItem'; 
+import './App.css'; // Assuming you have a main stylesheet
+
+// --- DUMMY DATA ---
+const INITIAL_TASKS = [
+  { id: 1, name: 'bedMedium', priority: 'Medium', completed: false },
+  { id: 2, name: 'taskMedium', priority: 'Medium', completed: false },
+  { id: 3, name: 'stuffMedium', priority: 'Medium', completed: true },
+];
+// ------------------
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("tasks");
-    try {
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
+  const [todos, setTodos] = useState(INITIAL_TASKS);
+  const [filter, setFilter] = useState('All'); // 'All', 'Active', 'Completed'
+  const [newTask, setNewTask] = useState('');
+  const [newPriority, setNewPriority] = useState('Medium'); // To match your UI dropdown
+
+  // --- Filtering Logic ---
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'Active') return !todo.completed;
+    if (filter === 'Completed') return todo.completed;
+    return true; // 'All'
   });
 
-  const [newTask, setNewTask] = useState("");
-  const [priority, setPriority] = useState("Medium");
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+  // --- Placeholder for CRUD functions (Delete is used in TaskItem) ---
+  const handleDelete = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
 
-  const [editingId, setEditingId] = useState(null);
-  const [editingText, setEditingText] = useState("");
-  // Added state for filtering
-  const [filterStatus, setFilterStatus] = useState("all");
+  // --- Logic to handle form submission (Add button) ---
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    if (newTask.trim() === '') return;
 
-  // Save tasks and dark mode to localStorage
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
-
-  const addTask = () => {
-    if (!newTask.trim()) return;
-    const task = {
+    const newTodo = {
       id: Date.now(),
-      title: newTask.trim(),
+      name: newTask.trim(),
+      priority: newPriority,
       completed: false,
-      priority: priority,
     };
-    setTasks([...tasks, task]);
-    setNewTask("");
-    setPriority("Medium"); // reset dropdown
+    setTodos([...todos, newTodo]);
+    setNewTask('');
   };
 
-  const toggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
-
-  const startEditing = (id, title) => {
-    setEditingId(id);
-    setEditingText(title);
-  };
-
-  const saveEdit = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, title: editingText } : task
-      )
-    );
-    setEditingId(null);
-    setEditingText("");
-  };
-
-  // Sort by priority (High > Medium > Low)
-  const priorityOrder = ["High", "Medium", "Low"];
-  const sortedTasks = [...tasks].sort(
-    (a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
-  );
-
-  // Filter tasks based on filterStatus
-  const filteredTasks = sortedTasks.filter((task) => {
-    if (filterStatus === "active") {
-      return !task.completed;
-    }
-    if (filterStatus === "completed") {
-      return task.completed;
-    }
-    return true; // "all"
-  });
-
-  // Helper component for the filter buttons (smaller styling)
-  const FilterButton = ({ status, children }) => (
-    <button
-      onClick={() => setFilterStatus(status)}
-      className={`py-0.5 px-2 rounded-full text-xs font-medium transition-colors ${
-        filterStatus === status
-          ? "bg-indigo-600 text-white"
-          : "bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500"
-      }`}
-    >
-      {children}
-    </button>
-  );
-
+  // --- JSX Rendering ---
   return (
-    // Outer container style (neutral background for better contrast)
-    <div className={`min-h-screen p-6 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
-      
-      {/* Inner container (the visible "window") */}
-      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
+    <div className="app-container">
+      <h1>Todo List</h1>
+
+      {/* Input and Add Section */}
+      <form onSubmit={handleAddTask} className="add-task-form">
+        <input
+          type="text"
+          placeholder="Enter a new task..."
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+        />
         
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            📝 My Todo List
-          </h1>
-          <button
-            className="px-3 py-1 rounded-lg text-sm bg-indigo-600 text-white hover:bg-indigo-700"
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
-        </div>
+        {/* Priority Dropdown (matching your UI) */}
+        <select
+          value={newPriority}
+          onChange={(e) => setNewPriority(e.target.value)}
+        >
+          <option value="Medium">⚖️ Medium</option>
+          <option value="High">🔥 High</option>
+          <option value="Low">💧 Low</option>
+        </select>
 
-        {/* Input Section */}
-        <div className="flex gap-2 mb-6">
-          <input
-            type="text"
-            placeholder="Enter a new task..."
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addTask()}
-            className="flex-grow px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-400 dark:bg-gray-700 dark:border-gray-600"
+        <button type="submit" className="add-button">Add</button>
+      </form>
+
+      {/* Filter Buttons Section */}
+      <div className="filter-buttons">
+        <button 
+          className={filter === 'All' ? 'active' : ''} 
+          onClick={() => setFilter('All')}
+        >
+          All ({todos.length})
+        </button>
+        <button 
+          className={filter === 'Active' ? 'active' : ''} 
+          onClick={() => setFilter('Active')}
+        >
+          Active ({todos.filter(t => !t.completed).length})
+        </button>
+        <button 
+          className={filter === 'Completed' ? 'active' : ''} 
+          onClick={() => setFilter('Completed')}
+        >
+          Completed ({todos.filter(t => t.completed).length})
+        </button>
+      </div>
+
+      {/* Main List Rendering Section */}
+      <ul className="todo-list">
+        {filteredTodos.map(todo => (
+          <TaskItem 
+            key={todo.id} 
+            todo={todo} 
+            handleDelete={handleDelete}
+            // Add other props like handleEdit, handleToggle if you implement them
           />
-
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="px-2 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
-          >
-            <option value="High">🔥 High</option>
-            <option value="Medium">⚖️ Medium</option>
-            <option value="Low">🟢 Low</option>
-          </select>
-
-          <button
-            onClick={addTask}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            Add
-          </button>
-        </div>
-
-        {/* Filter Section */}
-        <div className="flex gap-3 mb-6 border-b pb-4 border-gray-200 dark:border-gray-700">
-          <FilterButton status="all">All ({tasks.length})</FilterButton>
-          <FilterButton status="active">Active ({tasks.filter(t => !t.completed).length})</FilterButton>
-          <FilterButton status="completed">Completed ({tasks.filter(t => t.completed).length})</FilterButton>
-        </div>
-
-        {/* Task List */}
-        {(() => {
-          let emptyMessage = null;
-          if (filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all") {
-            emptyMessage = (
-              <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
-            );
-          } else if (filteredTasks.length === 0 && tasks.length === 0) {
-            emptyMessage = (
-              <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
-            );
-          }
-          return (
-            <ul className="space-y-3">
-              {emptyMessage ||
-                filteredTasks.map((task) => {
-                  // Extract priority class outside of JSX
-                  let priorityClass = "";
-                  if (task.priority === "High") {
-                    priorityClass = "bg-red-500 text-white";
-                  } else if (task.priority === "Medium") {
-                    priorityClass = "bg-yellow-400 text-black";
-                  } else {
-                    priorityClass = "bg-green-500 text-white";
-                  }
-
-                  return (
-                    <li
-                      key={task.id}
-                      // Task Item Styling: Rounded card appearance
-                      className={`flex justify-between items-center p-3 rounded-xl shadow-md transition-all duration-200 ${
-                        task.completed
-                          ? "line-through opacity-60 bg-green-100 dark:bg-green-800"
-                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                      }`}
-                    >
-                      {editingId === task.id ? (
-                        // Editing mode
-                        <div className="flex gap-2 w-full">
-                          <input
-                            type="text"
-                            value={editingText}
-                            onChange={(e) => setEditingText(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
-                            className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
-                            autoFocus
-                          />
-                          <button
-                            className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                            onClick={() => saveEdit(task.id)}
-                          >
-                            💾 Save
-                          </button>
-                        </div>
-                      ) : (
-                        // Display mode - Vertical Task/Priority Layout
-                        <>
-                          <div className="flex items-start flex-grow min-w-0">
-                            {/* 1. CHECKBOX */}
-                            <input
-                              type="checkbox"
-                              checked={task.completed}
-                              onChange={() => toggleComplete(task.id)}
-                              // Adjusted margins for better vertical alignment with text
-                              className="h-5 w-5 mt-1 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 flex-shrink-0"
-                            />
-
-                            {/* 2. TASK TITLE & PRIORITY (Vertical Container) */}
-                            <div className="flex flex-col flex-grow min-w-0">
-                              <span
-                                // Task Title: Larger (text-lg) and Bold (font-bold)
-                                className={`text-lg font-bold truncate ${
-                                  task.completed ? "text-gray-500 dark:text-gray-400" : ""
-                                }`}
-                              >
-                                {task.title}
-                              </span>
-
-                              {/* Priority Tag: On a new line, smaller text, slightly adjusted styling */}
-                              <span
-                                className={`mt-1 w-max px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${priorityClass}`}
-                              >
-                                {task.priority}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* RIGHT SIDE: Action Buttons */}
-                          <div className="ml-3 flex gap-2 flex-shrink-0">
-                            <button
-                              className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
-                              onClick={() => startEditing(task.id, task.title)}
-                              aria-label="Edit Task"
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
-                              onClick={() => deleteTask(task.id)}
-                              aria-label="Delete Task"
-                            >
-                              ✖
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-            </ul>
-          );
-        })()}
-
-        {/* Footer */}
-        <p className="mt-6 text-sm text-gray-600 dark:text-gray-400">
-          {tasks.filter((t) => t.completed).length} of {tasks.length} tasks completed
-        </p>
+        ))}
+      </ul>
+      
+      {/* Completed Count (matching your UI) */}
+      <div className="completed-count">
+        {todos.filter(t => t.completed).length} of {todos.length} tasks completed
       </div>
     </div>
   );
