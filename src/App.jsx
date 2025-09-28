@@ -1,22 +1,130 @@
 import React, { useState } from 'react';
-// Import your individual TaskItem component (where the layout change happened)
-import TodoItem from "./TodoItem";
-
-import './App.css'; // Assuming you have a main stylesheet
 
 // --- DUMMY DATA ---
 const INITIAL_TASKS = [
-  { id: 1, name: 'bedMedium', priority: 'Medium', completed: false },
-  { id: 2, name: 'taskMedium', priority: 'Medium', completed: false },
-  { id: 3, name: 'stuffMedium', priority: 'Medium', completed: true },
+  { id: 1, name: 'Finish React Refactor', priority: 'High', completed: false },
+  { id: 2, name: 'Buy groceries (Milk, Eggs)', priority: 'Medium', completed: false },
+  { id: 3, name: 'Deploy to GitHub Pages (Done!)', priority: 'Low', completed: true },
 ];
-// ------------------
 
-function App() {
+// --- Sub-Component for individual tasks ---
+const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
+  const priorityColors = {
+    High: 'bg-red-100 text-red-700 border-red-300',
+    Medium: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+    Low: 'bg-green-100 text-green-700 border-green-300',
+  };
+
+  const priorityClass = priorityColors[todo.priority] || 'bg-gray-100 text-gray-700 border-gray-300';
+  
+  return (
+    <li className={`flex items-center justify-between p-4 mb-3 rounded-xl shadow-md transition duration-200 ease-in-out ${
+        todo.completed ? 'bg-gray-50 opacity-60' : 'bg-white hover:shadow-lg'
+    }`}>
+      
+      {/* Task Content: Displays Priority (set during task creation) and Name */}
+      <div 
+        className="flex-1 min-w-0 mr-4"
+      >
+        <div className={`text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full inline-block ${priorityClass}`}>
+          {todo.priority}
+        </div>
+
+        <p className={`mt-1 text-gray-800 font-medium ${
+            todo.completed ? 'line-through text-gray-500' : ''
+        }`}>
+          {todo.name}
+        </p>
+      </div>
+
+      {/* Actions: Explicitly ordered Complete, Edit, Delete */}
+      <div className="flex space-x-2">
+        {/* 1. Complete/Uncomplete Button */}
+        <button
+          onClick={() => handleToggleComplete(todo.id)}
+          className={`p-2 rounded-lg transition duration-150 ${
+            todo.completed 
+              ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' // Unmark Complete
+              : 'bg-green-500 text-white hover:bg-green-600 shadow-md' // Mark Complete
+          }`}
+          title={todo.completed ? "Mark as Active (Complete)" : "Mark as Completed"}
+        >
+          {/* Checkmark Icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </button>
+        
+        {/* 2. Edit Button */}
+        <button
+          onClick={() => handleEdit(todo.id)}
+          className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-150"
+          title="Edit Task"
+        >
+          {/* Pencil Icon (Edit) */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.182 3.182l-.793.793-2.828-2.828.793-.793 2.828 2.828zm-4.243 4.243l4.243 4.243 4.243-4.243-4.243-4.243-4.243 4.243z"/>
+          </svg>
+        </button>
+        
+        {/* 3. Delete Button */}
+        <button
+          onClick={() => handleDelete(todo.id)}
+          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition duration-150"
+          title="Delete Task"
+        >
+          {/* Trash Icon (Delete) */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  );
+};
+
+
+// --- Main App Component ---
+const App = () => {
   const [todos, setTodos] = useState(INITIAL_TASKS);
-  const [filter, setFilter] = useState('All'); // 'All', 'Active', 'Completed'
-  const [newTask, setNewTask] = useState('');
-  const [newPriority, setNewPriority] = useState('Medium'); // To match your UI dropdown
+  const [filter, setFilter] = useState('All'); 
+  const [newTaskName, setNewTaskName] = useState('');
+  const [newPriority, setNewPriority] = useState('Medium'); 
+
+  // --- Utility Functions ---
+  const handleToggleComplete = (id) => {
+    setTodos(todos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  const handleDelete = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
+  
+  const handleEdit = (id) => {
+    // Placeholder for real edit logic (e.g., open a modal)
+    console.log(`Editing task ${id}`);
+    const task = todos.find(t => t.id === id);
+    if (task) {
+      // Using an alert for placeholder functionality, as a full modal UI is complex for this step.
+      alert(`Editing functionality for task: ${task.name} (ID: ${id}) would open here.`);
+    }
+  }
+
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    if (newTaskName.trim() === '') return;
+
+    const newTodo = {
+      id: Date.now(),
+      name: newTaskName.trim(),
+      priority: newPriority, // This is correctly set from the dropdown
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
+    setNewTaskName('');
+  };
 
   // --- Filtering Logic ---
   const filteredTodos = todos.filter(todo => {
@@ -25,93 +133,92 @@ function App() {
     return true; // 'All'
   });
 
-  // --- Placeholder for CRUD functions (Delete is used in TaskItem) ---
-  const handleDelete = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
-  };
+  const activeCount = todos.filter(t => !t.completed).length;
+  const completedCount = todos.filter(t => t.completed).length;
+  
+  const FilterButton = ({ label, currentFilter, count }) => (
+    <button
+      onClick={() => setFilter(label)}
+      className={`px-3 py-1 text-sm font-medium rounded-full transition duration-150 whitespace-nowrap ${
+        currentFilter === label 
+          ? 'bg-indigo-600 text-white shadow-md' 
+          : 'bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600'
+      }`}
+    >
+      {label} ({count})
+    </button>
+  );
 
-  // --- Logic to handle form submission (Add button) ---
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (newTask.trim() === '') return;
-
-    const newTodo = {
-      id: Date.now(),
-      name: newTask.trim(),
-      priority: newPriority,
-      completed: false,
-    };
-    setTodos([...todos, newTodo]);
-    setNewTask('');
-  }
-
-  // --- JSX Rendering ---
   return (
-    <div className="app-container">
-      <h1>Todo List</h1>
+    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      {/* Main Container: Centered and responsive width */}
+      <div className="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-2xl">
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+          Modern Task Manager
+        </h1>
 
-      {/* Input and Add Section */}
-      <form onSubmit={handleAddTask} className="add-task-form">
-        <input
-          type="text"
-          placeholder="Enter a new task..."
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
+        {/* --- Add Task Form --- */}
+        <form onSubmit={handleAddTask} className="flex flex-col space-y-3 mb-6">
+          <input
+            type="text"
+            placeholder="Enter a new task..."
+            value={newTaskName}
+            onChange={(e) => setNewTaskName(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+          />
+          
+          <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
+            {/* Priority Selection is correctly handled here */}
+            <select
+              value={newPriority}
+              onChange={(e) => setNewPriority(e.target.value)}
+              className="px-4 py-3 border border-gray-300 rounded-xl appearance-none text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 flex-1"
+            >
+              <option value="High">🔥 High Priority</option>
+              <option value="Medium">⚖️ Medium Priority</option>
+              <option value="Low">💧 Low Priority</option>
+            </select>
+
+            <button 
+              type="submit" 
+              className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition duration-150 shadow-lg"
+            >
+              Add Task
+            </button>
+          </div>
+        </form>
+
+        {/* --- Filter Buttons --- */}
+        <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          <FilterButton label="All" currentFilter={filter} count={todos.length} />
+          <FilterButton label="Active" currentFilter={filter} count={activeCount} />
+          <FilterButton label="Completed" currentFilter={filter} count={completedCount} />
+        </div>
+
+        {/* --- Todo List --- */}
+        <ul className="todo-list">
+          {filteredTodos.length > 0 ? (
+            filteredTodos.map(todo => (
+              <TodoItem 
+                key={todo.id} 
+                todo={todo} 
+                handleDelete={handleDelete}
+                handleToggleComplete={handleToggleComplete}
+                handleEdit={handleEdit}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-500 py-8">No tasks found for this filter. Time to relax!</p>
+          )}
+        </ul>
         
-        {/* Priority Dropdown (matching your UI) */}
-        <select
-          value={newPriority}
-          onChange={(e) => setNewPriority(e.target.value)}
-        >
-          <option value="Medium">⚖️ Medium</option>
-          <option value="High">🔥 High</option>
-          <option value="Low">💧 Low</option>
-        </select>
-
-        <button type="submit" className="add-button">Add</button>
-      </form>
-
-      {/* Filter Buttons Section */}
-      <div className="filter-buttons">
-        <button 
-          className={filter === 'All' ? 'active' : ''} 
-          onClick={() => setFilter('All')}
-        >
-          All ({todos.length})
-        </button>
-        <button 
-          className={filter === 'Active' ? 'active' : ''} 
-          onClick={() => setFilter('Active')}
-        >
-          Active ({todos.filter(t => !t.completed).length})
-        </button>
-        <button 
-          className={filter === 'Completed' ? 'active' : ''} 
-          onClick={() => setFilter('Completed')}
-        >
-          Completed ({todos.filter(t => t.completed).length})
-        </button>
-      </div>
-
-      {/* Main List Rendering Section */}
-      <ul className="todo-list">
-  {filteredTodos.map(todo => (
-    <TodoItem 
-      key={todo.id} 
-      todo={todo} 
-      handleDelete={handleDelete}
-      // Add other props like handleEdit, handleToggle if you implement them
-    />
-  ))}
-</ul>
-      
-      {/* Completed Count (matching your UI) */}
-      <div className="completed-count">
-        {todos.filter(t => t.completed).length} of {todos.length} tasks completed
+        {/* --- Completed Count Summary --- */}
+        <div className="mt-8 text-center text-sm font-medium text-gray-600">
+          {completedCount} of {todos.length} tasks completed. Great job!
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;

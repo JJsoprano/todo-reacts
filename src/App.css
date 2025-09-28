@@ -5,7 +5,7 @@
   justify-content: space-between; /* Pushes text to the left, buttons to the right */
   align-items: center;
   padding: 8px 15px;
-  background-color: #4CAF50; /* The green background shown in your image */
+  background-color: #1773d5; /* The green background shown in your image */
   margin-bottom: 5px;
   border-radius: 4px;
 }
@@ -31,16 +31,16 @@
 /* Styles for the Task Name line */
 .task-name {
   /* Style the main task name */
-  font-size: 1em;
+  font-size: 2em;
   font-weight: 500;
-  color: white;
+  color: rgb(245, 129, 6);
 }
 
 /* Styles for the action buttons (adjusting size/color to match your image) */
 .task-actions button {
   background-color: #2e7d32; /* Darker green */
   border: none;
-  color: white;
+  color: #535bf2;
   padding: 5px 10px;
   margin-left: 7px;
   border-radius: 3px;

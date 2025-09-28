@@ -120,7 +120,7 @@ button {
 padding: 0.5rem;
 cursor: pointer;
 background-color: #646cff; /* Primary button color */
-  color: white;
+  color: rgb(46, 3, 238);
   border: none;
   border-radius: 8px; /* Rounded corners */
   font-weight: 600;
