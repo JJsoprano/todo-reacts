@@ -231,8 +231,8 @@ function App() {
 
                         {/* 2. TASK TITLE */}
                         <span
-                          className={`text-base truncate ${task.completed ? "text-gray-500 dark:text-gray-400" : ""}`}
-                        >
+  className={`text-lg font-semibold flex-grow truncate ${task.completed ? "text-gray-500 dark:text-gray-400" : ""}`}
+>
                           {task.title}
                         </span>
                           
