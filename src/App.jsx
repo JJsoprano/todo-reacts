@@ -8,7 +8,8 @@ function App() {
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
-    }
+            }
+    
   });
 
   const [newTask, setNewTask] = useState("");
@@ -159,105 +160,117 @@ function App() {
           <FilterButton status="completed">Completed ({tasks.filter(t => t.completed).length})</FilterButton>
         </div>
 
-        {/* Task List */}
-        <ul className="space-y-3">
-          {(() => {
-            let content;
-            if (filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all") {
-              content = <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>;
-            } else if (filteredTasks.length === 0 && tasks.length === 0) {
-              content = <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>;
-            } else {
-              content = filteredTasks.map((task) => {
-                let priorityClass = "";
-                if (task.priority === "High") {
-                  priorityClass = "bg-red-500 text-white";
-                } else if (task.priority === "Medium") {
-                  priorityClass = "bg-yellow-400 text-black";
-                } else {
-                  priorityClass = "bg-green-500 text-white";
-                }
-                return (
-                  <li
-                    key={task.id}
-                    className={`flex justify-between items-center p-2 rounded-xl shadow-md transition-all duration-200 ${
-                      task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                {editingId === task.id ? (
-                  // ... (Editing mode remains the same)
-                  <div className="flex gap-2 w-full">
-                    <input
-                      type="text"
-                      value={editingText}
-                      onChange={(e) => setEditingText(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
-                      className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
-                      autoFocus
-                    />
-                    <button
-                      className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                      onClick={() => saveEdit(task.id)}
-                    >
-                      💾 Save
-                    </button>
-                  </div>
-                ) : (
-                  // Display mode with new Checkbox
-                  <div className="flex items-center flex-grow">
-                    {/* NEW CHECKBOX ELEMENT */}
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={() => toggleComplete(task.id)}
-                      className="h-5 w-5 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
-                    />
+ {/* Task List */}
+        {/* Extracted ternary logic into a variable */}
+        {/* Task list rendering is handled above the return */}
 
-                    {/* Task Title - Removed onClick, now the checkbox handles it */}
-                    <span
-                      className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap ${priorityClass}`}
-                    >
-                      {task.priority}
-                    </span>
-                    <span
-                      className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap ${
-                        task.priority === "High"
-                          ? "bg-red-500 text-white"
-                          : task.priority === "Medium"
-                          ? "bg-yellow-400 text-black"
-                          : "bg-green-500 text-white"
-                      }`}
-                    >
-                      {task.priority}
-                    </span>
-                    <div className="ml-3 flex gap-2">
+        {/* Extracted ternary logic into a variable */}
+        {/*
+          taskListContent will hold the JSX to render inside the <ul>
+        */}
+        {(() => {
+          let taskListContent;
+          if (filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all") {
+            taskListContent = (
+              <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
+            );
+          } else if (filteredTasks.length === 0 && tasks.length === 0) {
+            taskListContent = (
+              <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
+            );
+          } else {
+            taskListContent = filteredTasks.map((task) => {
+              // Extract priority class
+              let priorityClass = "";
+              if (task.priority === "High") {
+                priorityClass = "bg-red-500 text-white";
+              } else if (task.priority === "Medium") {
+                priorityClass = "bg-yellow-400 text-black";
+              } else {
+                priorityClass = "bg-green-500 text-white";
+              }
+
+              return (
+                <li
+                  key={task.id}
+                  // The main <li> needs to be a flex container with items aligned
+                  className={`flex justify-between items-center p-2 rounded-xl shadow-md transition-all duration-200 ${
+                    task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  {editingId === task.id ? (
+                    // Editing mode
+                    <div className="flex gap-2 w-full">
+                      <input
+                        type="text"
+                        value={editingText}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
+                        className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
+                        autoFocus
+                      />
                       <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
-                        onClick={() => startEditing(task.id, task.title)}
-                        aria-label="Edit Task"
+                        className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        onClick={() => saveEdit(task.id)}
                       >
-                        ✏️
+                        💾 Save
                       </button>
-                      <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
-                                onClick={() => deleteTask(task.id)}
-                                aria-label="Delete Task"
-                              >
-                                🗑️
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </li>
-                        );
-                      });
-                    }
-                    return content;
-                  })()}
-                </ul>
+                    </div>
+                  ) : (
+                    // Display mode - Corrected Layout
+                    <>
+                      <div className="flex items-center flex-grow min-w-0"> {/* min-w-0 prevents text overflow issues */}
+                          
+                        {/* 1. CHECKBOX */}
+                        <input
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() => toggleComplete(task.id)}
+                          className="h-5 w-5 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 flex-shrink-0"
+                        />
+
+                        {/* 2. TASK TITLE */}
+                        <span
+                          className={`text-base truncate ${task.completed ? "text-gray-500 dark:text-gray-400" : ""}`}
+                        >
+                          {task.title}
+                        </span>
+                          
+                        {/* 3. PRIORITY TAG */}
+                        <span
+                          className={`ml-3 px-2 py-1 text-xs font-bold rounded-lg whitespace-nowrap flex-shrink-0 ${priorityClass}`}
+                        >
+                          {task.priority}
+                        </span>
+                      </div>
+
+                      {/* 4. ACTION BUTTONS (Edit/Delete) - Remains separate on the right */}
+                      <div className="ml-3 flex gap-2 flex-shrink-0">
+                        <button
+                          className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
+                          onClick={() => startEditing(task.id, task.title)}
+                          aria-label="Edit Task"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
+                          onClick={() => deleteTask(task.id)}
+                          aria-label="Delete Task"
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              );
+            });
+          }
+          return <ul className="space-y-3">{taskListContent}</ul>;
+        })()}
               </div>
             </div>
           );
         }
-        
-        export default App;
+        export default App; 
