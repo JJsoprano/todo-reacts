@@ -159,99 +159,117 @@ function App() {
         </div>
 
         {/* Task List */}
-        <ul className="space-y-3">
-          {filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all" ? (
-             <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
-          ) : filteredTasks.length === 0 && tasks.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
-          ) : (
-            filteredTasks.map((task) => (
-              <li
-                key={task.id}
-                // Task Item Styling: Rounded card appearance
-                className={`flex justify-between items-center p-3 rounded-xl shadow-md transition-all duration-200 ${
-                  task.completed ? "line-through opacity-60 bg-green-100 dark:bg-green-800" : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-                }`}
-              >
-                {editingId === task.id ? (
-                  // Editing mode
-                  <div className="flex gap-2 w-full">
-                    <input
-                      type="text"
-                      value={editingText}
-                      onChange={(e) => setEditingText(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
-                      className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
-                      autoFocus
-                    />
-                    <button
-                      className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                      onClick={() => saveEdit(task.id)}
+        {(() => {
+          let emptyMessage = null;
+          if (filteredTasks.length === 0 && tasks.length > 0 && filterStatus !== "all") {
+            emptyMessage = (
+              <p className="text-gray-500 dark:text-gray-400">No {filterStatus} tasks found!</p>
+            );
+          } else if (filteredTasks.length === 0 && tasks.length === 0) {
+            emptyMessage = (
+              <p className="text-gray-500 dark:text-gray-400">No tasks yet 🎉</p>
+            );
+          }
+          return (
+            <ul className="space-y-3">
+              {emptyMessage ||
+                filteredTasks.map((task) => {
+                  // Extract priority class outside of JSX
+                  let priorityClass = "";
+                  if (task.priority === "High") {
+                    priorityClass = "bg-red-500 text-white";
+                  } else if (task.priority === "Medium") {
+                    priorityClass = "bg-yellow-400 text-black";
+                  } else {
+                    priorityClass = "bg-green-500 text-white";
+                  }
+
+                  return (
+                    <li
+                      key={task.id}
+                      // Task Item Styling: Rounded card appearance
+                      className={`flex justify-between items-center p-3 rounded-xl shadow-md transition-all duration-200 ${
+                        task.completed
+                          ? "line-through opacity-60 bg-green-100 dark:bg-green-800"
+                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      }`}
                     >
-                      💾 Save
-                    </button>
-                  </div>
-                ) : (
-                  // Display mode - Vertical Task/Priority Layout
-                  <>
-                    <div className="flex items-start flex-grow min-w-0">
-                        
-                      {/* 1. CHECKBOX */}
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleComplete(task.id)}
-                        // Adjusted margins for better vertical alignment with text
-                        className="h-5 w-5 mt-1 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 flex-shrink-0"
-                      />
+                      {editingId === task.id ? (
+                        // Editing mode
+                        <div className="flex gap-2 w-full">
+                          <input
+                            type="text"
+                            value={editingText}
+                            onChange={(e) => setEditingText(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && saveEdit(task.id)}
+                            className="flex-grow px-2 py-1 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-gray-900 dark:text-white"
+                            autoFocus
+                          />
+                          <button
+                            className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                            onClick={() => saveEdit(task.id)}
+                          >
+                            💾 Save
+                          </button>
+                        </div>
+                      ) : (
+                        // Display mode - Vertical Task/Priority Layout
+                        <>
+                          <div className="flex items-start flex-grow min-w-0">
+                            {/* 1. CHECKBOX */}
+                            <input
+                              type="checkbox"
+                              checked={task.completed}
+                              onChange={() => toggleComplete(task.id)}
+                              // Adjusted margins for better vertical alignment with text
+                              className="h-5 w-5 mt-1 mr-3 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 flex-shrink-0"
+                            />
 
-                      {/* 2. TASK TITLE & PRIORITY (Vertical Container) */}
-                      <div className="flex flex-col flex-grow min-w-0">
-                        <span
-                          // Task Title: Larger (text-lg) and Bold (font-bold)
-                          className={`text-lg font-bold truncate ${task.completed ? "text-gray-500 dark:text-gray-400" : ""}`}
-                        >
-                          {task.title}
-                        </span>
-                          
-                        {/* Priority Tag: On a new line, smaller text, slightly adjusted styling */}
-                        <span
-                          className={`mt-1 w-max px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${
-                            task.priority === "High"
-                              ? "bg-red-500 text-white"
-                              : task.priority === "Medium"
-                              ? "bg-yellow-400 text-black"
-                              : "bg-green-500 text-white"
-                          }`}
-                        >
-                          {task.priority}
-                        </span>
-                      </div>
-                    </div>
+                            {/* 2. TASK TITLE & PRIORITY (Vertical Container) */}
+                            <div className="flex flex-col flex-grow min-w-0">
+                              <span
+                                // Task Title: Larger (text-lg) and Bold (font-bold)
+                                className={`text-lg font-bold truncate ${
+                                  task.completed ? "text-gray-500 dark:text-gray-400" : ""
+                                }`}
+                              >
+                                {task.title}
+                              </span>
 
-                    {/* RIGHT SIDE: Action Buttons */}
-                    <div className="ml-3 flex gap-2 flex-shrink-0">
-                      <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
-                        onClick={() => startEditing(task.id, task.title)}
-                        aria-label="Edit Task"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
-                        onClick={() => deleteTask(task.id)}
-                        aria-label="Delete Task"
-                      >
-                        ✖
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))
-          )}
-        </ul>
+                              {/* Priority Tag: On a new line, smaller text, slightly adjusted styling */}
+                              <span
+                                className={`mt-1 w-max px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${priorityClass}`}
+                              >
+                                {task.priority}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* RIGHT SIDE: Action Buttons */}
+                          <div className="ml-3 flex gap-2 flex-shrink-0">
+                            <button
+                              className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-blue-500"
+                              onClick={() => startEditing(task.id, task.title)}
+                              aria-label="Edit Task"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="p-2 text-white rounded-full hover:opacity-80 transition-opacity bg-red-500"
+                              onClick={() => deleteTask(task.id)}
+                              aria-label="Delete Task"
+                            >
+                              ✖
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
+            </ul>
+          );
+        })()}
 
         {/* Footer */}
         <p className="mt-6 text-sm text-gray-600 dark:text-gray-400">
