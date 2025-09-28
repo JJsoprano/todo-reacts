@@ -42,10 +42,10 @@ const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
         {/* 1. Complete/Uncomplete Button */}
         <button
           onClick={() => handleToggleComplete(todo.id)}
-          className={`p-2 rounded-lg transition duration-150 ${
+          className={`p-2 rounded-lg transition duration-150 shadow-sm ${
             todo.completed 
               ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' // Unmark Complete
-              : 'bg-green-500 text-white hover:bg-green-600 shadow-md' // Mark Complete
+              : 'bg-green-500 text-white hover:bg-green-600' // Mark Complete
           }`}
           title={todo.completed ? "Mark as Active (Complete)" : "Mark as Completed"}
         >
@@ -58,7 +58,7 @@ const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
         {/* 2. Edit Button */}
         <button
           onClick={() => handleEdit(todo.id)}
-          className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-150"
+          className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-150 shadow-sm"
           title="Edit Task"
         >
           {/* Pencil Icon (Edit) */}
@@ -70,7 +70,7 @@ const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
         {/* 3. Delete Button */}
         <button
           onClick={() => handleDelete(todo.id)}
-          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition duration-150"
+          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition duration-150 shadow-sm"
           title="Delete Task"
         >
           {/* Trash Icon (Delete) */}
