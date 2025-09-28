@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // Import your individual TaskItem component (where the layout change happened)
-import TaskItem from './TaskItem'; 
+import TodoItem from "./TodoItem";
+
 import './App.css'; // Assuming you have a main stylesheet
 
 // --- DUMMY DATA ---
@@ -42,7 +43,7 @@ function App() {
     };
     setTodos([...todos, newTodo]);
     setNewTask('');
-  };
+  }
 
   // --- JSX Rendering ---
   return (
@@ -95,15 +96,15 @@ function App() {
 
       {/* Main List Rendering Section */}
       <ul className="todo-list">
-        {filteredTodos.map(todo => (
-          <TaskItem 
-            key={todo.id} 
-            todo={todo} 
-            handleDelete={handleDelete}
-            // Add other props like handleEdit, handleToggle if you implement them
-          />
-        ))}
-      </ul>
+  {filteredTodos.map(todo => (
+    <TodoItem 
+      key={todo.id} 
+      todo={todo} 
+      handleDelete={handleDelete}
+      // Add other props like handleEdit, handleToggle if you implement them
+    />
+  ))}
+</ul>
       
       {/* Completed Count (matching your UI) */}
       <div className="completed-count">

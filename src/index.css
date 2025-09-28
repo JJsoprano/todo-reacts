@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -74,12 +74,12 @@ input[type="number"] {
 
 .todo-item.completed .todo-text {
   text-decoration: line-through;
-  color: #2a2929; /* Dim text for completed tasks */
+  color: #c2bbbb; /* Dim text for completed tasks */
   font-style: italic;
 }
 .todo-text {
   flex-grow: 1; /* Allow text to take available space */
-  font-size: 1.1rem; /* Slightly larger font size */
+  font-size: 2.1rem; /* Slightly larger font size */
   color: #333; /* Darker text color */
 }
 
