@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './index.css';
 
 // --- DUMMY DATA ---
 const INITIAL_TASKS = [
@@ -107,7 +108,7 @@ const App = () => {
     console.log(`Editing task ${id}`);
     const task = todos.find(t => t.id === id);
     if (task) {
-      // Using an alert for placeholder functionality, as a full modal UI is complex for this step.
+      // Using a custom dialog or prompt would replace the alert() in a production environment.
       alert(`Editing functionality for task: ${task.name} (ID: ${id}) would open here.`);
     }
   }
@@ -196,7 +197,7 @@ const App = () => {
         </div>
 
         {/* --- Todo List --- */}
-        <ul className="todo-list">
+        <ul className="todo-list **list-none p-0**">
           {filteredTodos.length > 0 ? (
             filteredTodos.map(todo => (
               <TodoItem 

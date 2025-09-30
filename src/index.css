@@ -17,15 +17,14 @@ It imports the Tailwind base layers and applies a fundamental CSS reset.
 
 Global CSS Reset:
 
-This ensures the background color set in App.jsx (bg-gray-100)
-
-covers the entire screen, replacing any dark or conflicting colors.
-*/
+Ensures clean slate for Tailwind.
+/
 body {
 margin: 0;
 line-height: 1.5;
-font-family: 'Inter', sans-serif; /* Recommended modern font */
-}
+font-family: 'Inter', sans-serif;
+/ Importantly, we remove any custom colors or conflicting margins here. */
+
 
 /* Ensure the root element takes full height */
 #root {
