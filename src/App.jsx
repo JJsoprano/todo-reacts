@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 // --- DUMMY DATA ---
 const INITIAL_TASKS = [
@@ -8,6 +7,7 @@ const INITIAL_TASKS = [
   { id: 3, name: 'Deploy to GitHub Pages (Done!)', priority: 'Low', completed: true },
 ];
 
+// --- Sub-Component for individual tasks ---
 const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
   const priorityColors = {
     High: 'bg-red-50 text-red-700 border-red-300',
@@ -19,16 +19,12 @@ const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
   
   return (
     // Key Change: Ensure all list item styling (padding, margin, shadow) is here
-    <li
-      className={`
-        flex items-center justify-between p-4 mb-3 rounded-xl transition duration-200 ease-in-out 
-        ${todo.completed 
-          ? 'bg-gray-50 opacity-60 shadow-inner' 
-          : 'bg-white shadow-lg hover:shadow-xl'
-        }`}
-      tabIndex={-1}
-      aria-label={`Task: ${todo.name}`}
-      data-task-id={todo.id}
+    <li className={`
+      flex items-center justify-between p-4 mb-3 rounded-xl transition duration-200 ease-in-out 
+      ${todo.completed 
+        ? 'bg-gray-50 opacity-60 shadow-inner' 
+        : 'bg-white shadow-lg hover:shadow-xl'
+      }`}
     >
       
       {/* Task Content: Displays Priority and Name */}
@@ -45,67 +41,52 @@ const TodoItem = ({ todo, handleDelete, handleToggleComplete, handleEdit }) => {
           {todo.name}
         </p>
       </div>
-        {/* Actions: Complete, Edit, Delete */}
-        <div className="flex space-x-2 flex-shrink-0">
-          {/* 1. Complete/Uncomplete Button */}
-          <button
-            onClick={() => handleToggleComplete(todo.id)}
-            className={`p-2 rounded-lg transition duration-150 shadow-md ${
-              todo.completed 
-                ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' // Unmark Complete
-                : 'bg-green-500 text-white hover:bg-green-600' // Mark Complete
-            }`}
-            title={todo.completed ? "Mark as Active" : "Mark as Completed"}
-          >
-            {/* Checkmark Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-          </button>
-          
-          {/* 2. Edit Button */}
-          <button
-            onClick={() => handleEdit(todo.id)}
-            className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-150 shadow-md"
-            title="Edit Task"
-          >
-            {/* Pencil Icon (Edit) */}
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.182 3.182l-.793.793-2.828-2.828.793-.793 2.828 2.828zm-4.243 4.243l4.243 4.243 4.243-4.243-4.243-4.243-4.243 4.243z"/>
-            </svg>
-          </button>
-          
-          {/* 3. Delete Button */}
-          <button
-            onClick={() => handleDelete(todo.id)}
-            className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition duration-150 shadow-md"
-            title="Delete Task"
-          >
-            {/* Trash Icon (Delete) */}
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clipRule="evenodd" />
-            </svg>
-          </button>
-        </div>
-      </li>
-    );
-};
 
-TodoItem.propTypes = {
-  todo: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string.isRequired,
-    priority: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-  }).isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  handleToggleComplete: PropTypes.func.isRequired,
-  handleEdit: PropTypes.func.isRequired,
-  // Add id prop validation if TodoItem ever receives id directly (not just via todo)
-  // id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      {/* Actions: Complete, Edit, Delete */}
+      <div className="flex space-x-2 flex-shrink-0">
+        {/* 1. Complete/Uncomplete Button */}
+        <button
+          onClick={() => handleToggleComplete(todo.id)}
+          className={`p-2 rounded-lg transition duration-150 shadow-md ${
+            todo.completed 
+              ? 'bg-gray-200 text-gray-600 hover:bg-gray-300' // Unmark Complete
+              : 'bg-green-500 text-white hover:bg-green-600' // Mark Complete
+          }`}
+          title={todo.completed ? "Mark as Active" : "Mark as Completed"}
+        >
+          {/* Checkmark Icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </button>
+        
+        {/* 2. Edit Button */}
+        <button
+          onClick={() => handleEdit(todo.id)}
+          className="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition duration-150 shadow-md"
+          title="Edit Task"
+        >
+          {/* Pencil Icon (Edit) */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.182 3.182l-.793.793-2.828-2.828.793-.793 2.828 2.828zm-4.243 4.243l4.243 4.243 4.243-4.243-4.243-4.243-4.243 4.243z"/>
+          </svg>
+        </button>
+        
+        {/* 3. Delete Button */}
+        <button
+          onClick={() => handleDelete(todo.id)}
+          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition duration-150 shadow-md"
+          title="Delete Task"
+        >
+          {/* Trash Icon (Delete) */}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  );
 };
-// --- Main App Component ---
-// (Removed duplicate empty App declaration)
 
 
 // --- Main App Component ---
@@ -131,8 +112,8 @@ const App = () => {
     console.log(`Editing task ${id}`);
     const task = todos.find(t => t.id === id);
     if (task) {
-      // Using a custom dialog or prompt would replace the alert() in a production environment.
-      alert(`Editing functionality for task: ${task.name} (ID: ${id}) would open here.`);
+      // Replaced alert() with console.log for proper sandbox behavior
+      console.log(`[EDIT ACTION] Task ID: ${id}, Name: ${task.name}. Implement modal here.`);
     }
   }
 
