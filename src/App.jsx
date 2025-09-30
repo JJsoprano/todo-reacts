@@ -150,7 +150,7 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen **bg-slate-800** py-10 px-4 sm:px-6 lg:px-8">
       {/* Main Container: Centered and responsive width */}
       <div className="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-2xl">
         <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
