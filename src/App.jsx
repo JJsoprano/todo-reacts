@@ -1,100 +1,71 @@
 import React, { useState } from "react";
-import "./App.css";
-import TodoItem from "./TodoItem";
+import "./index.css";
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [task, setTask] = useState("");
-  const [priority, setPriority] = useState("Medium");
-  const [filter, setFilter] = useState("All");
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState("");
+  const [priority, setPriority] = useState("Low");
 
-  const addTodo = (e) => {
-    e.preventDefault();
-    if (!task.trim()) return;
-    setTodos([
-      ...todos,
-      { id: Date.now(), name: task, priority, completed: false },
-    ]);
-    setTask("");
-    setPriority("Medium");
+  const addTask = () => {
+    if (!text.trim()) return;
+    const newTask = {
+      id: Date.now(),
+      text,
+      priority,
+      completed: false
+    };
+    setTasks([...tasks, newTask]);
+    setText("");
+    setPriority("Low");
   };
 
-  const handleDelete = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const toggleComplete = (id) => {
+    setTasks(tasks.map(t =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    ));
   };
 
-  const handleToggle = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(t => t.id !== id));
   };
-
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === "Completed") return todo.completed;
-    if (filter === "Active") return !todo.completed;
-    return true;
-  });
-
-  const completedCount = todos.filter((t) => t.completed).length;
 
   return (
     <div className="app-container">
-      <h1>My To-Do List</h1>
-      <form className="add-task-form" onSubmit={addTodo}>
+      <h1>My Todo App</h1>
+
+      <div className="task-form">
         <input
-          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           placeholder="Enter a task..."
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
         />
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
-          <option>High</option>
-          <option>Medium</option>
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
           <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
         </select>
-        <button type="submit">Add</button>
-      </form>
-
-      <div className="filter-buttons">
-        <button
-          className={filter === "All" ? "active" : ""}
-          onClick={() => setFilter("All")}
-        >
-          All
-        </button>
-        <button
-          className={filter === "Active" ? "active" : ""}
-          onClick={() => setFilter("Active")}
-        >
-          Active
-        </button>
-        <button
-          className={filter === "Completed" ? "active" : ""}
-          onClick={() => setFilter("Completed")}
-        >
-          Completed
-        </button>
+        <button onClick={addTask}>Add</button>
       </div>
 
-      <ul className="todo-list">
-        {filteredTodos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            handleDelete={handleDelete}
-            handleToggle={handleToggle}
-          />
-        ))}
-      </ul>
-
-      <div className="completed-count">
-        Completed: {completedCount} / {todos.length}
-      </div>
+      {tasks.map((task) => (
+        <div key={task.id} className="task">
+          <div>
+            <span
+              className="task-text"
+              style={{ textDecoration: task.completed ? "line-through" : "none" }}
+            >
+              {task.text}
+            </span>
+            <span className="task-priority">({task.priority})</span>
+          </div>
+          <div className="task-buttons">
+            <button className="complete" onClick={() => toggleComplete(task.id)}>
+              {task.completed ? "Undo" : "Complete"}
+            </button>
+            <button className="delete" onClick={() => deleteTask(task.id)}>Delete</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
