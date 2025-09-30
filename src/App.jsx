@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // --- TodoItem Component Definition (Inline for Single File) ---
-const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
+const TodoItem = ({ todo, handleDelete, handleComplete, handleEdit }) => {
   const getPriorityClasses = (priority) => {
     switch (priority) {
       case 'High':
@@ -17,14 +17,15 @@ const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
   return (
     <li
       className={`
-        flex items-center justify-between p-2 mb-3 rounded-xl shadow-lg
+        flex items-center justify-between p-3 mb-3 rounded-xl shadow-lg
         bg-white transition duration-300 ring-2 
         ${todo.completed ? 'opacity-70 ring-teal-200' : 'ring-teal-100'}
+        list-none
       `}
     >
       {/* Task Name Button - Click to potentially select or view details (currently toggles complete) */}
       <button
-        onClick={() => handleToggle(todo.id)} // Keeping the toggle action on click for utility
+        onClick={() => handleComplete(todo.id)} // Renamed from handleToggle
         className="flex-1 flex flex-col items-start p-2 rounded-lg text-left transition duration-150 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 mr-2 min-w-0"
       >
         <span
@@ -34,7 +35,7 @@ const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
           {todo.priority}
         </span>
         <span
-          className={`text-lg font-medium text-gray-800 break-words ${todo.completed ? 'line-through text-gray-500' : ''}`}
+          className={`text-lg font-medium text-gray-800 break-words ${todo.completed ? 'line-through text-gray-500' : ''} list-none`}
         >
           {todo.name}
         </span>
@@ -44,7 +45,7 @@ const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
       <div className="flex space-x-1 shrink-0">
         {/* Complete Button (Checkmark) */}
         <button
-          onClick={() => handleToggle(todo.id)}
+          onClick={() => handleComplete(todo.id)} // Renamed from handleToggle
           className={`p-2 rounded-lg transition duration-150 ease-in-out shadow-sm
             ${todo.completed 
               ? 'bg-teal-600 text-white hover:bg-teal-700' 
@@ -129,12 +130,8 @@ function App() {
   );
 
   // --- Edit task ---
-  const handleEdit = (id, currentName) => {
+  const handleEdit = () => {
     // In a real app, this would open a modal/input field.
-    // We will display a simple console message for now.
-    const message = `Editing task ${id}, Name: ${currentName}. Implement a modal or input field here.`;
-    console.log(message);
-    // You can implement a simple in-app message box here if desired.
   };
 
 
@@ -143,8 +140,8 @@ function App() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  // --- Toggle complete ---
-  const handleToggle = (id) => {
+  // --- Complete/Toggle task ---
+  const handleComplete = (id) => { // Renamed from handleToggle
     setTodos(
       todos.map(todo =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -169,7 +166,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-teal-50 p-4 sm:p-6 lg:p-8">
+    // Added inline style for immediate visual feedback, in case Tailwind classes fail to load externally.
+    <div className="min-h-screen bg-teal-50 p-4 sm:p-6 lg:p-8" style={{ backgroundColor: '#f0fdfa' }}> 
       <div className="app-container max-w-xl mx-auto p-6 bg-white rounded-3xl shadow-2xl">
         <h1 className="text-4xl font-extrabold text-teal-800 mb-6 text-center">Modern Task Manager</h1>
 
@@ -228,7 +226,7 @@ function App() {
               key={todo.id}
               todo={todo}
               handleDelete={handleDelete}
-              handleToggle={handleToggle}
+              handleComplete={handleComplete} // Renamed prop
               handleEdit={handleEdit}
             />
           ))}
