@@ -17,15 +17,18 @@ const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
   return (
     <li
       className={`
-        flex items-center justify-between p-4 mb-3 rounded-xl shadow-lg
-        bg-white transition duration-300 transform hover:scale-[1.01]
-        ring-2 ${todo.completed ? 'opacity-50 ring-teal-200' : 'ring-teal-100'}
+        flex items-center justify-between p-2 mb-3 rounded-xl shadow-lg
+        bg-white transition duration-300 ring-2 
+        ${todo.completed ? 'opacity-70 ring-teal-200' : 'ring-teal-100'}
       `}
     >
-      {/* Task Content */}
-      <div className="flex-1 flex flex-col min-w-0 pr-4">
+      {/* Task Name Button - Click to potentially select or view details (currently toggles complete) */}
+      <button
+        onClick={() => handleToggle(todo.id)} // Keeping the toggle action on click for utility
+        className="flex-1 flex flex-col items-start p-2 rounded-lg text-left transition duration-150 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 mr-2 min-w-0"
+      >
         <span
-          className={`text-sm font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full self-start mb-1 
+          className={`text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-full self-start mb-1 
             ${getPriorityClasses(todo.priority)}`}
         >
           {todo.priority}
@@ -35,11 +38,11 @@ const TodoItem = ({ todo, handleDelete, handleToggle, handleEdit }) => {
         >
           {todo.name}
         </span>
-      </div>
+      </button>
 
       {/* Action Buttons */}
-      <div className="flex space-x-2 shrink-0">
-        {/* Complete Button */}
+      <div className="flex space-x-1 shrink-0">
+        {/* Complete Button (Checkmark) */}
         <button
           onClick={() => handleToggle(todo.id)}
           className={`p-2 rounded-lg transition duration-150 ease-in-out shadow-sm
@@ -100,12 +103,30 @@ function App() {
   const [newTask, setNewTask] = useState('');
   const [newPriority, setNewPriority] = useState('Medium');
 
-  // --- Filtering ---
-  const filteredTodos = todos.filter(todo => {
-    if (filter === 'Active') return !todo.completed;
-    if (filter === 'Completed') return todo.completed;
-    return true;
-  });
+  // Helper function to sort tasks by priority (High > Medium > Low)
+  const sortTodos = (tasks) => {
+    const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+    
+    // Sort logic: first by priority (descending), then by ID (to maintain stable order)
+    return [...tasks].sort((a, b) => {
+      const orderA = priorityOrder[a.priority] || 0;
+      const orderB = priorityOrder[b.priority] || 0;
+
+      if (orderA !== orderB) {
+        return orderB - orderA; // Descending priority
+      }
+      return a.id - b.id; // Stable secondary sort
+    });
+  };
+
+  // --- Filtering and Sorting ---
+  const filteredTodos = sortTodos(
+    todos.filter(todo => {
+      if (filter === 'Active') return !todo.completed;
+      if (filter === 'Completed') return todo.completed;
+      return true;
+    })
+  );
 
   // --- Edit task ---
   const handleEdit = (id, currentName) => {
