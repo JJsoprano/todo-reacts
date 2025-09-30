@@ -1,32 +1,12 @@
-/*
-
-This file is crucial for enabling Tailwind CSS and ensuring its utility
-
-classes (defined in src/App.jsx) take full effect without interference
-
-from conflicting browser or boilerplate styles.
-
-It imports the Tailwind base layers and applies a fundamental CSS reset.
-*/
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/*
-
-Global CSS Reset:
-
-Ensures clean slate for Tailwind.
-/
+/* index.css */
 body {
-margin: 0;
-line-height: 1.5;
-font-family: 'Inter', sans-serif;
-/ Importantly, we remove any custom colors or conflicting margins here. */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
 
-
-/* Ensure the root element takes full height */
-#root {
-min-height: 100vh;
+* {
+  box-sizing: border-box;
 }
