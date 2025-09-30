@@ -8,11 +8,13 @@ export default defineConfig({
   // CRITICAL: GitHub Pages deployment base path
   base: '/todo-reacts/', 
   
-  // CRITICAL: Explicitly ensure PostCSS/Tailwind is configured for CSS processing
+  // Explicitly ensure PostCSS/Tailwind is configured for CSS processing
+  // NOTE: This block is usually only needed if you do NOT have a separate postcss.config.js file.
   css: {
     postcss: {
       plugins: [
-        // Ensure these are configured if you are running this locally
+        // Ensure these are configured if you are running this locally.
+        // If your build fails here, ensure you have a separate postcss.config.js
         // require('tailwindcss'),
         // require('autoprefixer'),
       ],
