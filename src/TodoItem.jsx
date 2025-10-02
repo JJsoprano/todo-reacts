@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function TodoItem({ todo, handleDelete, handleToggle }) {
   return (
@@ -16,5 +17,16 @@ function TodoItem({ todo, handleDelete, handleToggle }) {
     </li>
   );
 }
+
+TodoItem.propTypes = {
+  todo: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired,
+    priority: PropTypes.string,
+  }).isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  handleToggle: PropTypes.func.isRequired,
+};
 
 export default TodoItem;
