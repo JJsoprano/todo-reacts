@@ -1,71 +1,110 @@
-import React, { useState } from "react";
-import "./index.css";
+import { useState } from "react";
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [text, setText] = useState("");
-  const [priority, setPriority] = useState("Low");
+  const [input, setInput] = useState("");
+  const [filter, setFilter] = useState("All"); // 👈 filter state
 
   const addTask = () => {
-    if (!text.trim()) return;
-    const newTask = {
-      id: Date.now(),
-      text,
-      priority,
-      completed: false
-    };
-    setTasks([...tasks, newTask]);
-    setText("");
-    setPriority("Low");
+    if (input.trim() === "") return;
+    setTasks([...tasks, { text: input, completed: false }]);
+    setInput("");
   };
 
-  const toggleComplete = (id) => {
-    setTasks(tasks.map(t =>
-      t.id === id ? { ...t, completed: !t.completed } : t
-    ));
+  const toggleTask = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
+    setTasks(newTasks);
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter(t => t.id !== id));
+  const removeTask = (index) => {
+    setTasks(tasks.filter((_, i) => i !== index));
   };
+
+  // 👇 filter logic
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "Active") return !task.completed;
+    if (filter === "Completed") return task.completed;
+    return true;
+  });
 
   return (
-    <div className="app-container">
-      <h1>My Todo App</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4">
+      <div className="bg-white shadow-2xl rounded-xl p-6 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          📝 My Todo List
+        </h1>
 
-      <div className="task-form">
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter a task..."
-        />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-        </select>
-        <button onClick={addTask}>Add</button>
-      </div>
-
-      {tasks.map((task) => (
-        <div key={task.id} className="task">
-          <div>
-            <span
-              className="task-text"
-              style={{ textDecoration: task.completed ? "line-through" : "none" }}
-            >
-              {task.text}
-            </span>
-            <span className="task-priority">({task.priority})</span>
-          </div>
-          <div className="task-buttons">
-            <button className="complete" onClick={() => toggleComplete(task.id)}>
-              {task.completed ? "Undo" : "Complete"}
-            </button>
-            <button className="delete" onClick={() => deleteTask(task.id)}>Delete</button>
-          </div>
+        {/* Input + Add Button */}
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Add a new task..."
+            className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+          <button
+            onClick={addTask}
+            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition"
+          >
+            Add
+          </button>
         </div>
-      ))}
+
+        {/* Filter Buttons */}
+        <div className="flex justify-center gap-2 mb-6">
+          {["All", "Active", "Completed"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1 rounded-lg font-medium transition ${
+                filter === f
+                  ? "bg-indigo-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {/* Task List */}
+        <ul className="space-y-3">
+          {filteredTasks.length === 0 ? (
+            <li className="text-center text-gray-400 italic">No tasks</li>
+          ) : (
+            filteredTasks.map((task, index) => (
+              <li
+                key={index}
+                className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow"
+              >
+                <span
+                  onClick={() => toggleTask(index)}
+                  className={`cursor-pointer ${
+                    task.completed
+                      ? "line-through text-gray-400"
+                      : "text-gray-800"
+                  }`}
+                >
+                  {task.text}
+                </span>
+                <button
+                  onClick={() => removeTask(index)}
+                  className="text-red-500 hover:text-red-700 font-bold"
+                >
+                  ✕
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
+
+        {/* Footer */}
+        <div className="mt-6 text-sm text-gray-500 text-center">
+          {tasks.filter((t) => t.completed).length} of {tasks.length} tasks done
+        </div>
+      </div>
     </div>
   );
 }
