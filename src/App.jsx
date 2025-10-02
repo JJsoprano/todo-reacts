@@ -79,16 +79,18 @@ function App() {
                 key={index}
                 className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow"
               >
-                <span
+                <button
+                  type="button"
                   onClick={() => toggleTask(index)}
-                  className={`cursor-pointer ${
+                  className={`cursor-pointer bg-transparent border-none p-0 text-left focus:outline-none ${
                     task.completed
                       ? "line-through text-gray-400"
                       : "text-gray-800"
                   }`}
+                  aria-pressed={task.completed}
                 >
                   {task.text}
-                </span>
+                </button>
                 <button
                   onClick={() => removeTask(index)}
                   className="text-red-500 hover:text-red-700 font-bold"
