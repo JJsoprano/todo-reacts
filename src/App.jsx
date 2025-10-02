@@ -7,7 +7,10 @@ function App() {
 
   const addTask = () => {
     if (input.trim() === "") return;
-    setTasks([...tasks, { text: input, completed: false }]);
+    setTasks([
+      ...tasks,
+      { id: Date.now() + Math.random(), text: input, completed: false }
+    ]);
     setInput("");
   };
 
@@ -71,35 +74,31 @@ function App() {
 
         {/* Task List */}
         <ul className="space-y-3">
-          {filteredTasks.length === 0 ? (
-            <li className="text-center text-gray-400 italic">No tasks</li>
-          ) : (
-            filteredTasks.map((task, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow"
+          {filteredTasks.map((task) => (
+            <li
+              key={task.id}
+              className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow"
+            >
+              <button
+                type="button"
+                onClick={() => toggleTask(tasks.findIndex(t => t.id === task.id))}
+                className={`cursor-pointer bg-transparent border-none p-0 text-left focus:outline-none ${
+                  task.completed
+                    ? "line-through text-gray-400"
+                    : "text-gray-800"
+                }`}
+                aria-pressed={task.completed}
               >
-                <button
-                  type="button"
-                  onClick={() => toggleTask(index)}
-                  className={`cursor-pointer bg-transparent border-none p-0 text-left focus:outline-none ${
-                    task.completed
-                      ? "line-through text-gray-400"
-                      : "text-gray-800"
-                  }`}
-                  aria-pressed={task.completed}
-                >
-                  {task.text}
-                </button>
-                <button
-                  onClick={() => removeTask(index)}
-                  className="text-red-500 hover:text-red-700 font-bold"
-                >
-                  ✕
-                </button>
-              </li>
-            ))
-          )}
+                {task.text}
+              </button>
+              <button
+                onClick={() => removeTask(tasks.findIndex(t => t.id === task.id))}
+                className="text-red-500 hover:text-red-700 font-bold"
+              >
+                ✕
+              </button>
+            </li>
+          ))}
         </ul>
 
         {/* Footer */}
