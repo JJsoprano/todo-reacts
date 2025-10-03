@@ -1,17 +1,15 @@
 .app-container {
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #fdfdfd;
+  background-color: white;
+  padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  width: 400px;
+  max-width: 90%;
 }
 
 h1 {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .task-input {
@@ -106,3 +104,15 @@ h1 {
   font-size: 0.9rem;
   color: #666;
 }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #cce7ff; /* light blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+
