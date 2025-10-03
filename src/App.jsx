@@ -3,7 +3,9 @@ import { useState } from "react";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
-  const [filter, setFilter] = useState("All"); // 👈 filter state
+  const [filter, setFilter] = useState("All");
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState("");
 
   const addTask = () => {
     if (input.trim() === "") return;
@@ -24,7 +26,20 @@ function App() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
-  // 👇 filter logic
+  const startEdit = (id, currentText) => {
+    setEditingId(id);
+    setEditText(currentText);
+  };
+
+  const saveEdit = (id) => {
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, text: editText } : task
+    ));
+    setEditingId(null);
+    setEditText("");
+  };
+
+  // Filtered list
   const filteredTasks = tasks.filter((task) => {
     if (filter === "Active") return !task.completed;
     if (filter === "Completed") return task.completed;
@@ -79,24 +94,56 @@ function App() {
               key={task.id}
               className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow"
             >
-              <button
-                type="button"
-                onClick={() => toggleTask(tasks.findIndex(t => t.id === task.id))}
-                className={`cursor-pointer bg-transparent border-none p-0 text-left focus:outline-none ${
-                  task.completed
-                    ? "line-through text-gray-400"
-                    : "text-gray-800"
-                }`}
-                aria-pressed={task.completed}
-              >
-                {task.text}
-              </button>
-              <button
-                onClick={() => removeTask(tasks.findIndex(t => t.id === task.id))}
-                className="text-red-500 hover:text-red-700 font-bold"
-              >
-                ✕
-              </button>
+              {editingId === task.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    className="flex-1 px-2 py-1 rounded border mr-2"
+                  />
+                  <button
+                    onClick={() => saveEdit(task.id)}
+                    className="text-green-600 hover:text-green-800 font-bold mr-2"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="text-gray-500 hover:text-gray-700 font-bold"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => toggleTask(tasks.findIndex(t => t.id === task.id))}
+                    className={`cursor-pointer bg-transparent border-none p-0 text-left focus:outline-none flex-1 ${
+                      task.completed
+                        ? "line-through text-gray-400"
+                        : "text-gray-800"
+                    }`}
+                  >
+                    {task.text}
+                  </button>
+                  <div className="flex gap-2 ml-2">
+                    <button
+                      onClick={() => startEdit(task.id, task.text)}
+                      className="text-blue-500 hover:text-blue-700 font-bold"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => removeTask(tasks.findIndex(t => t.id === task.id))}
+                      className="text-red-500 hover:text-red-700 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </>
+              )}
             </li>
           ))}
         </ul>
