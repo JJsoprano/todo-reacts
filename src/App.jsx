@@ -1,11 +1,13 @@
 import { useState } from "react";
-import TodoItem from "./TodoItem";
+import "./App.css";
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [filter, setFilter] = useState("All");
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState("");
 
   const addTask = () => {
     if (input.trim() === "") return;
@@ -14,15 +16,14 @@ function App() {
       {
         id: Date.now() + Math.random(),
         text: input,
+        priority,
         completed: false,
-        priority: priority
-      }
+      },
     ]);
     setInput("");
-    setPriority("Medium");
   };
 
-  const handleToggle = (id) => {
+  const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
@@ -30,18 +31,26 @@ function App() {
     );
   };
 
-  const handleDelete = (id) => {
+  const removeTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const handleEdit = (id, newText) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, text: newText } : task
-      )
-    );
+  const startEdit = (id, text) => {
+    setEditingId(id);
+    setEditText(text);
   };
 
+  const saveEdit = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, text: editText } : task
+      )
+    );
+    setEditingId(null);
+    setEditText("");
+  };
+
+  // Filtered list
   const filteredTasks = tasks.filter((task) => {
     if (filter === "Active") return !task.completed;
     if (filter === "Completed") return task.completed;
@@ -49,72 +58,77 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4">
-      <div className="bg-white shadow-2xl rounded-xl p-6 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          📝 My Todo List
-        </h1>
+    <div className="app-container">
+      <h1>📝 My Todo List</h1>
 
-        {/* Input + Priority + Add Button */}
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Add a new task..."
-            className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="px-2 py-2 border rounded-lg"
-          >
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
+      {/* Input Section */}
+      <div className="task-input">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Add a new task..."
+        />
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option value="High">🔥 High</option>
+          <option value="Medium">⚖️ Medium</option>
+          <option value="Low">💧 Low</option>
+        </select>
+        <button onClick={addTask}>Add</button>
+      </div>
+
+      {/* Filter Buttons */}
+      <div className="filters">
+        {["All", "Active", "Completed"].map((f) => (
           <button
-            onClick={addTask}
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition"
+            key={f}
+            onClick={() => setFilter(f)}
+            className={filter === f ? "active" : ""}
           >
-            Add
+            {f}
           </button>
-        </div>
+        ))}
+      </div>
 
-        {/* Filter Buttons */}
-        <div className="flex justify-center gap-2 mb-6">
-          {["All", "Active", "Completed"].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded-lg font-medium transition ${
-                filter === f
-                  ? "bg-indigo-500 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+      {/* Task List */}
+      <ul className="task-list">
+        {filteredTasks.map((task) => (
+          <li key={task.id} className={task.completed ? "completed" : ""}>
+            {editingId === task.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                />
+                <button onClick={() => saveEdit(task.id)}>Save</button>
+              </>
+            ) : (
+              <>
+                <span className="task-text">
+                  {task.text} <em>[{task.priority}]</em>
+                </span>
+                <div className="buttons">
+                  <button onClick={() => toggleTask(task.id)}>
+                    {task.completed ? "Undo" : "Complete"}
+                  </button>
+                  <button onClick={() => startEdit(task.id, task.text)}>
+                    Edit
+                  </button>
+                  <button onClick={() => removeTask(task.id)}>Delete</button>
+                </div>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
 
-        {/* Task List */}
-        <ul className="space-y-3">
-          {filteredTasks.map((task) => (
-            <TodoItem
-              key={task.id}
-              todo={task}
-              handleDelete={handleDelete}
-              handleToggle={handleToggle}
-              handleEdit={handleEdit}
-            />
-          ))}
-        </ul>
-
-        {/* Footer */}
-        <div className="mt-6 text-sm text-gray-500 text-center">
-          {tasks.filter((t) => t.completed).length} of {tasks.length} tasks done
-        </div>
+      {/* Footer */}
+      <div className="footer">
+        {tasks.filter((t) => t.completed).length} of {tasks.length} tasks done
       </div>
     </div>
   );
