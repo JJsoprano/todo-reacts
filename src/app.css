@@ -57,16 +57,18 @@ h1 {
 .task-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .task-list li {
   background: #f9f9f9;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 6px;
+  margin-bottom: 0.7rem;
+  padding: 0.6rem;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.2s ease-in-out; /* smooth hover */
 }
 
 .task-list li.completed .task-text {
@@ -114,5 +116,16 @@ body {
   align-items: center;
   min-height: 100vh;
 }
+/* Task List */
+
+
+
+
+.task-list li:hover {
+  background: #eef6ff; /* soft blue highlight */
+  transform: translateY(-2px); /* slight lift */
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12); /* soft shadow */
+}
+
 
 
