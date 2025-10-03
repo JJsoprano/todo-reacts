@@ -13,7 +13,7 @@ function TodoItem({ todo, handleDelete, handleToggle, handleEdit }) {
   };
 
   return (
-    <li className={`flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow`}>
+    <li className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded-lg shadow">
       <div className="flex flex-col">
         {isEditing ? (
           <input
@@ -24,7 +24,7 @@ function TodoItem({ todo, handleDelete, handleToggle, handleEdit }) {
           />
         ) : (
           <span
-            className={`todo-text ${
+            className={`${
               todo.completed ? "line-through text-gray-400" : "text-gray-800"
             }`}
           >
