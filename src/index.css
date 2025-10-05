@@ -1,16 +1,13 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
-    /* --- CHANGE YOUR BACKGROUND COLOR HERE --- */
-    background: #0335d6; /* Example: A new light blue/grey */
-    /* or use a gradient: */
 
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* This pushes your todo card down from the top */
-    min-height: 100vh;
+/* Global styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #cce7ff; /* light blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .app-container {
