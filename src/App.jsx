@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css"; // custom styles
+import './app.css';
 
 /**
  * App component, responsible for rendering the entire Todo List app.
@@ -149,6 +149,7 @@ function App() {
                       {task.priority}
                     </span>
                   </div>
+
                   <button onClick={() => toggleTask(task.id)}>
                     {task.completed ? "Undo" : "Complete"}
                   </button>
