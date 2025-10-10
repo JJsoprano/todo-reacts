@@ -94,8 +94,9 @@ color: #888;
 .priority {
 padding: 4px 8px;
 border-radius: 6px;
-font-size: 12px;
-font-weight: bold;
+font-size: 5px;
+font-weight: normal;
+text-transform: uppercase;
 }
 
 .priority.high {

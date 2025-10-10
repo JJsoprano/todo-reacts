@@ -1,6 +1,12 @@
 import { useState } from "react";
 import "./App.css"; // custom styles
 
+/**
+ * App component, responsible for rendering the entire Todo List app.
+ * Manages state for tasks, input, priority, filter, editingId, and editText.
+ * Renders an input section, filter buttons, task list, and footer.
+ * Handles functions for adding, toggling, removing, starting edit, and saving edits for tasks.
+ */
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
@@ -9,6 +15,13 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
+  /**
+   * Adds a new task to the list of tasks.
+   * If the input is empty, nothing happens.
+   * Creates a new task object with the current input, priority, and completed status.
+   * Adds the new task to the list of tasks.
+   * Resets the input to an empty string after adding the task.
+   */
   const addTask = () => {
     if (input.trim() === "") return;
     setTasks([
@@ -23,6 +36,11 @@ function App() {
     setInput("");
   };
 
+  /**
+   * Toggles the completed status of a task with the given id.
+   * If the task with the given id exists, its completed status will be flipped.
+   * If the task with the given id does not exist, nothing happens.
+   */
   const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -31,20 +49,36 @@ function App() {
     );
   };
 
+  /**
+   * Removes a task with the given id from the list of tasks.
+   * If the task with the given id exists, it will be removed from the list.
+   * If the task with the given id does not exist, nothing happens.
+   * @param {number|string} id - the id of the task to be removed
+   */
   const removeTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  /**
+   * Starts editing a task with the given id and text.
+   * The editingId state will be set to the given id, and the editText state will be set to the given text.
+   * @param {number|string} id - the id of the task to start editing
+   * @param {string} text - the text of the task to start editing
+   */
   const startEdit = (id, text) => {
     setEditingId(id);
     setEditText(text);
   };
 
+  /**
+   * Saves the edited task with the given id.
+   * Updates the task with the given id to have the text of the editText state.
+   * Resets the editingId and editText states to null and an empty string respectively.
+   * @param {number|string} id - the id of the task to be saved
+   */
   const saveEdit = (id) => {
     setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, text: editText } : task
-      )
+      tasks.map((task) => (task.id === id ? { ...task, text: editText } : task))
     );
     setEditingId(null);
     setEditText("");
@@ -109,18 +143,19 @@ function App() {
                 </>
               ) : (
                 <>
-                  <span className="task-text">
-                    {task.text} <em>[{task.priority}]</em>
-                  </span>
-                  <div className="buttons">
-                    <button onClick={() => toggleTask(task.id)}>
-                      {task.completed ? "Undo" : "Complete"}
-                    </button>
-                    <button onClick={() => startEdit(task.id, task.text)}>
-                      Edit
-                    </button>
-                    <button onClick={() => removeTask(task.id)}>Delete</button>
+                  <div className="task-content">
+                    <span className="task-text">{task.text}</span>
+                    <span className={`priority ${task.priority.toLowerCase()}`}>
+                      {task.priority}
+                    </span>
                   </div>
+                  <button onClick={() => toggleTask(task.id)}>
+                    {task.completed ? "Undo" : "Complete"}
+                  </button>
+                  <button onClick={() => startEdit(task.id, task.text)}>
+                    Edit
+                  </button>
+                  <button onClick={() => removeTask(task.id)}>Delete</button>
                 </>
               )}
             </li>
