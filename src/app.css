@@ -73,6 +73,19 @@ h1 {
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
 }
+.task-text em {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-left: 6px;
+}
+
+.task-text em[value="High"] {
+  color: #ff4d4d; /* red */
+}
+
+.task-text em[value="Medium"] {
+  color: #ffa500
+}
 
 .task-input input,
 .task-input select {
