@@ -1,0 +1,10 @@
+{
+  "name": "deploy-todo-app",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy:frontend": "npm run build && npm run deploy",
+    "deploy:backend": "echo 'Deploy backend to Render manually using the GitHub integration'",
+    "build:prod": "npm run build",
+    "preview:local": "npm run preview"
+  }
+}

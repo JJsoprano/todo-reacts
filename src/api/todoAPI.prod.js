@@ -1,39 +1,11 @@
-// Production/Development API configuration
-// For now, we'll use a mock API in production until backend is deployed
+// Production API configuration
 const API_BASE_URL = import.meta.env.PROD 
-  ? '' // Empty for frontend-only demo (will use mock data)
+  ? 'https://your-backend-url.onrender.com'  // Replace with your actual backend URL
   : 'http://localhost:5000';
-
-// Mock data for production demo
-const MOCK_TODOS = [
-  {
-    _id: '1',
-    text: 'Welcome to the Todo App Demo!',
-    priority: 'High',
-    completed: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    _id: '2', 
-    text: 'This is running with mock data (backend not deployed yet)',
-    priority: 'Medium',
-    completed: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
-
-let mockData = [...MOCK_TODOS];
 
 class TodoAPI {
   async fetchTodos() {
     try {
-      if (import.meta.env.PROD && !API_BASE_URL) {
-        // Return mock data in production
-        return [...mockData];
-      }
-      
       const response = await fetch(`${API_BASE_URL}/tasks`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,29 +13,12 @@ class TodoAPI {
       return await response.json();
     } catch (error) {
       console.error('Error fetching todos:', error);
-      if (import.meta.env.PROD) {
-        return [...mockData]; // Fallback to mock data
-      }
       throw error;
     }
   }
 
   async createTodo(text, priority = 'Medium') {
     try {
-      if (import.meta.env.PROD && !API_BASE_URL) {
-        // Mock create in production
-        const newTodo = {
-          _id: Date.now().toString(),
-          text,
-          priority,
-          completed: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        mockData.unshift(newTodo);
-        return newTodo;
-      }
-      
       const response = await fetch(`${API_BASE_URL}/tasks`, {
         method: 'POST',
         headers: {
@@ -85,16 +40,6 @@ class TodoAPI {
 
   async updateTodo(id, updates) {
     try {
-      if (import.meta.env.PROD && !API_BASE_URL) {
-        // Mock update in production
-        const index = mockData.findIndex(todo => todo._id === id);
-        if (index !== -1) {
-          mockData[index] = { ...mockData[index], ...updates, updatedAt: new Date().toISOString() };
-          return mockData[index];
-        }
-        throw new Error('Todo not found');
-      }
-      
       const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
         method: 'PATCH',
         headers: {
@@ -116,16 +61,6 @@ class TodoAPI {
 
   async deleteTodo(id) {
     try {
-      if (import.meta.env.PROD && !API_BASE_URL) {
-        // Mock delete in production
-        const index = mockData.findIndex(todo => todo._id === id);
-        if (index !== -1) {
-          const deleted = mockData.splice(index, 1)[0];
-          return { message: 'Todo deleted successfully', todo: deleted };
-        }
-        throw new Error('Todo not found');
-      }
-      
       const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
         method: 'DELETE',
       });
