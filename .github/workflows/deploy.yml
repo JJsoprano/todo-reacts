@@ -24,6 +24,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: List files for debugging
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Files in src:"
+          ls -la src/
+          echo "Looking for App.css:"
+          find . -name "App.css" -type f
+
       - name: Build project
         run: npm run build
 
