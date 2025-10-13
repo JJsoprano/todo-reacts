@@ -21,7 +21,8 @@ app.get("/", (req, res) => {
   res.json({ 
     message: "Todo Backend API is running! 🚀",
     status: "healthy",
-    mongoStatus: mongoose.connection.readyState === 1 ? "connected" : "disconnected"
+    mongoStatus: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    timestamp: new Date().toISOString()
   });
 });
 
