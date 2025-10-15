@@ -5,16 +5,16 @@
   --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 
-  /* A modern, soft color palette */
-  --color-primary: #6d5bff;
-  --color-primary-dark: #5a49e0;
+  /* Ocean Theme - Blue & Fresh */
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 
   --color-text: #1f2937;
   --color-text-light: #6b7280;
-  --color-bg: #f9fafb;
+  --color-bg: #f0f9ff;
   --color-surface: #ffffff;
   --color-border: #e5e7eb;
 
@@ -39,8 +39,8 @@
 body {
   font-family: var(--font-family-sans);
   color: var(--color-text);
-  /* A subtle gradient is more modern than a solid color */
-  background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+  /* Ocean wave background */
+  background-image: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
   display: flex;
   justify-content: center;
   align-items: flex-start; /* Align to top on mobile */
