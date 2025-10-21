@@ -23,6 +23,13 @@ function App() {
     loadTodos();
   }, []);
 
+  /**
+   * Loads todos from the Todo API.
+   * Sets loading to true and resets error while loading.
+   * Sets tasks to the loaded todos on success.
+   * Sets error to a friendly message on failure.
+   * Sets loading to false in the finally block.
+   */
   const loadTodos = async () => {
     try {
       setLoading(true);

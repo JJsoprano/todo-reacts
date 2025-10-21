@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * A TodoItem component to render a single todo item in the todo list.
+ *
+ * @param {Object} todo - The todo object to be rendered.
+ * @param {Function} handleDelete - The function to call when the delete button is clicked.
+ * @param {Function} handleToggle - The function to call when the complete button is clicked.
+ * @param {Function} handleEdit - The function to call when the edit button is clicked.
+ *
+ * @returns {ReactElement} A ReactElement representing the rendered todo item.
+ */
 function TodoItem({ todo, handleDelete, handleToggle, handleEdit }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(todo.text);
