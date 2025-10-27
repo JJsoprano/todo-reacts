@@ -12,7 +12,7 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [priority, setPriority] = useState("Medium");
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState("Active");
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [loading, setLoading] = useState(false);
