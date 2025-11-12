@@ -1,86 +1,57 @@
-# 🔐 Node.js Encryption Service for Todo App
+# 🔐 Todo Encryption Service
 
-## 🚀 **SUCCESS! Your Encryption Service is Ready!**
+A Node.js microservice that provides AES-256-CBC encryption for todo data.
 
-Your **Node.js encryption microservice** is now running and ready to secure your todo data! 🎉
+## � Quick Deploy to Render
 
-## 📊 **What We Built**
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-### **✅ Service Status:**
-- 🔐 **Encryption Service**: Running on port 5001  
-- 🔑 **Encryption Key**: Auto-generated (AES-256-CBC)  
-- 🍃 **MongoDB**: Connected to your existing database  
-- 🌐 **CORS**: Enabled for your React frontend  
+## �️ Manual Deployment
 
-### **🔐 How It Works:**
-```javascript
-// Your React app sends:
-{ text: "Buy groceries", completed: false }
-
-// Stored in MongoDB (encrypted):
-{ text: "a1b2c3d4:encrypted_data_here", completed: false }
-
-// Retrieved by React (decrypted):
-{ text: "Buy groceries", completed: false }
+### 1. Environment Variables
+Set these in your Render dashboard:
+```
+MONGODB_URI=your_mongodb_connection_string
+NODE_ENV=production
 ```
 
-## 🔄 **Next Steps: Connect Your React App**
+### 2. Build Settings
+- **Build Command**: (leave empty)
+- **Start Command**: `node server.js`
+- **Node Version**: 18.x
 
-### **Step 1: Update Your Todo API**
-You need to point your React app to use the **encryption service** instead of the regular backend:
-
-**In your React app, find `src/todoAPI.js` (or wherever you make API calls) and change:**
-```javascript
-// OLD: Regular backend (port 5000)
-const API_BASE_URL = 'http://localhost:5000'
-
-// NEW: Encryption service (port 5001)  
-const API_BASE_URL = 'http://localhost:5001'
-```
-
-### **Step 2: Test Your Encrypted Todos**
-1. **Keep encryption service running** (don't close the terminal)
-2. **Start your React app** in another terminal
-3. **Create a new todo** - it will be automatically encrypted!
-4. **Check your database** - you'll see encrypted text
-
-## 🛡️ **Security Features You Now Have**
-
-### **🔐 Data Encryption:**
-- **Todo text** is encrypted before database storage
-- **Descriptions** are encrypted (if you add them later)
-- **Metadata** (completed, priority, dates) stays readable for filtering
-
-### **🔑 Key Management:**
-- **Auto-generated** 256-bit encryption key
-- **Stored locally** in `encryption.key` file
-- **Never committed** to git (in .gitignore)
-
-### **🌐 API Security:**
-- **Helmet.js** for security headers
-- **CORS** configured for your React domain
-- **Input validation** and error handling
-
-## 📡 **Available Endpoints**
+## � API Endpoints
 
 - `GET /` - Health check
 - `GET /todos` - Get all todos (auto-decrypted)
 - `POST /todos` - Create todo (auto-encrypted)
-- `PATCH /todos/:id` - Update todo (auto-encrypted)
+- `PATCH /todos/:id` - Update todo
 - `DELETE /todos/:id` - Delete todo
-- `GET /encryption/status` - Check encryption status
-- `POST /encryption/test` - Test encryption/decryption
+- `GET /encryption/status` - Encryption status
+- `POST /encryption/test` - Test encryption
 
-## 🎯 **Benefits You Get**
+## �️ Architecture
 
-✅ **Your todo text is encrypted** in the database  
-✅ **Even database admins can't read** your todos  
-✅ **Zero changes needed** to your React UI  
-✅ **Same MongoDB database** - just encrypted  
-✅ **Professional security** without complexity  
+```
+React Frontend → Encryption Service → MongoDB Atlas
+```
 
-## ⚡ **Ready to Test?**
+## 🛡️ Security Features
 
-Your encryption service is **running right now**! Just update your React app's API endpoint and start creating encrypted todos! 🚀
+- **AES-256-CBC encryption** for todo text
+- **Auto-generated encryption keys**
+- **CORS enabled** for frontend
+- **Helmet.js** security headers
+- **Input validation** and error handling
 
-**Want me to help you update your React app to use the encryption service?** Just say "yes" and I'll make the changes! 🎯
+## 📦 Dependencies
+
+- Express.js for HTTP server
+- Mongoose for MongoDB connection
+- Crypto for encryption
+- Helmet.js for security
+- CORS for cross-origin requests
+
+---
+
+**Note**: This service is designed to work with the [Todo React App](https://github.com/JJsoprano/todo-reacts)

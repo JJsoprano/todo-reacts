@@ -1,6 +1,6 @@
 // Production/Development API configuration with ENCRYPTION SERVICE
 const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://todo-reacts.onrender.com'  // ✅ Your real Render backend URL (TODO: Deploy encryption service)
+  ? 'https://todo-encryption-service.onrender.com'  // 🔐 ENCRYPTION SERVICE URL (update after deployment)
   : 'http://localhost:5001';  // 🔐 Encryption service on port 5001
 
 class TodoAPI {
