@@ -1,7 +1,7 @@
-// Production/Development API configuration with ENCRYPTION SERVICE
+// Production/Development API configuration
 const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://todo-encryption-service.onrender.com'  // 🔐 ENCRYPTION SERVICE URL (update after deployment)
-  : 'http://localhost:5001';  // 🔐 Encryption service on port 5001
+  ? 'https://todo-reacts.onrender.com'  // ✅ Your working Render backend
+  : 'http://localhost:5000';  // 🔧 Back to simple backend on port 5000
 
 class TodoAPI {
   /**
@@ -12,7 +12,7 @@ class TodoAPI {
    */
   async fetchTodos() {
     try {
-      const response = await fetch(`${API_BASE_URL}/todos`);  // 🔐 Updated to /todos for encryption service
+      const response = await fetch(`${API_BASE_URL}/tasks`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -33,7 +33,7 @@ class TodoAPI {
    */
   async createTodo(text, priority = 'Medium') {
     try {
-      const response = await fetch(`${API_BASE_URL}/todos`, {  // 🔐 Updated to /todos for encryption service
+      const response = await fetch(`${API_BASE_URL}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ class TodoAPI {
    */
   async updateTodo(id, updates) {
     try {
-      const response = await fetch(`${API_BASE_URL}/todos/${id}`, {  // 🔐 Updated to /todos for encryption service
+      const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ class TodoAPI {
    */
   async deleteTodo(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/todos/${id}`, {  // 🔐 Updated to /todos for encryption service
+      const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
         method: 'DELETE',
       });
       
@@ -113,7 +113,7 @@ class TodoAPI {
    */
   async healthCheck() {
     try {
-      const response = await fetch(`${API_BASE_URL}/`);  // 🔐 Updated to root endpoint for encryption service health check
+      const response = await fetch(`${API_BASE_URL}/tasks`);
       return await response.json();
     } catch (error) {
       console.error('API health check failed:', error);
